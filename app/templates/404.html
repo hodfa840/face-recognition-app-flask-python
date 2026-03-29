@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div style="height: 70vh; display: flex; flex-direction: column; align-items:center; justify-content:center; text-align:center;">
+    <h1 style="font-size: 8rem; font-family: 'Outfit'; color: var(--accent); opacity: 0.2;">404</h1>
+    <h2 style="margin-bottom: 1.5rem;">RESOURCE NOT FOUND</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem;">The analysis path or subject record you are looking for does not exist in our neural cache.</p>
+    <a href="{{ url_for('main.dashboard') }}" class="btn">
+        <i class="fa-solid fa-home"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}

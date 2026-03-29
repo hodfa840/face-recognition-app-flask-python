@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">Face Verification</h1>
+    <p class="animate-up">Determine if two different images represent the same individual.</p>
+</div>
+
+<div class="card animate-up" style="max-width: 1000px; margin: 0 auto; text-align: center;">
+    <form action="{{ url_for('recognition.verify_face') }}" method="post" enctype="multipart/form-data">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <!-- Left Side Upload -->
+            <div style="background: rgba(255, 255, 255, 0.02); padding: 2rem; border-radius: 20px; border: 2px dashed var(--glass-border); display: flex; flex-direction: column; align-items: center;">
+                <i class="fa-solid fa-user- astronaut" style="font-size: 3rem; color: var(--accent); margin-bottom: 1.5rem;"></i>
+                <label for="img1" class="btn" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent);">
+                    <i class="fa-solid fa-plus"></i> Select Subject A
+                    <input type="file" name="img1" id="img1" hidden onchange="previewImage(this, 'preview1')">
+                </label>
+                <div id="preview1-container" style="margin-top: 1.5rem; width: 100%; display: none;">
+                    <img id="preview1" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                </div>
+            </div>
+
+            <!-- Right Side Upload -->
+            <div style="background: rgba(255, 255, 255, 0.02); padding: 2rem; border-radius: 20px; border: 2px dashed var(--glass-border); display: flex; flex-direction: column; align-items: center;">
+                <i class="fa-solid fa-user-secret" style="font-size: 3rem; color: #ec4899; margin-bottom: 1.5rem;"></i>
+                <label for="img2" class="btn" style="background: rgba(255, 255, 255, 0.05); border: 1px solid #ec4899;">
+                    <i class="fa-solid fa-plus"></i> Select Subject B
+                    <input type="file" name="img2" id="img2" hidden onchange="previewImage(this, 'preview2')">
+                </label>
+                <div id="preview2-container" style="margin-top: 1.5rem; width: 100%; display: none;">
+                    <img id="preview2" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: left;">
+            <h3 style="margin-bottom: 1rem; font-family: 'Outfit';">Verification Engine Config</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                   <label style="font-size: 0.8rem; color: var(--text-secondary);">Model Architecture</label>
+                    <select name="model" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border);">
+                        <option value="VGG-Face">VGG-Face (Baseline)</option>
+                        <option value="Facenet">FaceNet (High Accuracy)</option>
+                        <option value="ArcFace">ArcFace (Robust)</option>
+                        <option value="OpenFace">OpenFace (Efficient)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-secondary);">Similarity Threshold</label>
+                    <p style="padding: 10px; color: var(--success); font-weight: 600;">Adaptive (Dynamic)</p>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn" style="background: var(--accent); padding: 1.2rem 4rem; font-size: 1.1rem;">
+            Run Match Evaluation <i class="fa-solid fa-fingerprint"></i>
+        </button>
+    </form>
+</div>
+
+<script>
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var container = document.getElementById(previewId + '-container');
+            var img = document.getElementById(previewId);
+            img.src = e.target.result;
+            container.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

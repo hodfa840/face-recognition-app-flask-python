@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">Welcome to Vision Engine</h1>
+    <p class="animate-up">Enterprise-grade facial analysis and recognition suite.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="card stat-card animate-up">
+        <div class="stat-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="stat-info">
+            <h3>99.38%</h3>
+            <p>LFW Model Accuracy</p>
+        </div>
+    </div>
+    <div class="card stat-card animate-up">
+        <div class="stat-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+        <div class="stat-info">
+            <h3>< 120ms</h3>
+            <p>Avg. Recognition Time</p>
+        </div>
+    </div>
+    <div class="card stat-card animate-up">
+        <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="stat-info">
+            <h3>Active</h3>
+            <p>Privacy Guard Mode</p>
+        </div>
+    </div>
+    <div class="card stat-card animate-up">
+        <div class="stat-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="stat-info">
+            <h3>8+</h3>
+            <p>Ensemble Model Types</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div class="card animate-up">
+        <h2 style="margin-bottom: 1.5rem; font-family: 'Outfit'; border-bottom: 2px solid var(--glass-border); padding-bottom: 0.8rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-rocket" style="color: var(--accent);"></i>
+            Current Capabilities
+        </h2>
+        
+        <div class="use-cases" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="use-case-item card" style="background: rgba(255,255,255,0.02); border-radius: 15px; border-color: rgba(255,255,255,0.05);">
+                <i class="fa-solid fa-face-smile" style="color: #fbbf24; font-size: 1.5rem; margin-bottom: 15px; display: block;"></i>
+                <h4 style="margin-bottom: 8px;">Emotion Analysis</h4>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Detect real-time emotions like Happy, Sad, Angry with state-of-the-art accuracy.</p>
+                <a href="{{ url_for('analysis.index') }}" class="btn" style="margin-top: 1.5rem; width: 100%; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent);">Explore</a>
+            </div>
+            <div class="use-case-item card" style="background: rgba(255,255,255,0.02); border-radius: 15px; border-color: rgba(255,255,255,0.05);">
+                <i class="fa-solid fa-venus-mars" style="color: #ec4899; font-size: 1.5rem; margin-bottom: 15px; display: block;"></i>
+                <h4 style="margin-bottom: 8px;">Demographic Estimator</h4>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Precise age and gender estimation using deep neural network ensembles.</p>
+                <a href="{{ url_for('analysis.index') }}" class="btn" style="margin-top: 1.5rem; width: 100%; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent);">Explore</a>
+            </div>
+            <div class="use-case-item card" style="background: rgba(255,255,255,0.02); border-radius: 15px; border-color: rgba(255,255,255,0.05);">
+                <i class="fa-solid fa-fingerprint" style="color: #22c55e; font-size: 1.5rem; margin-bottom: 15px; display: block;"></i>
+                <h4 style="margin-bottom: 8px;">Verification Engine</h4>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Match two subjects using advanced Siamese networks like FaceNet and DeepID.</p>
+                <a href="{{ url_for('recognition.verify_face') }}" class="btn" style="margin-top: 1.5rem; width: 100%; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent);">Explore</a>
+            </div>
+            <div class="use-case-item card" style="background: rgba(255,255,255,0.02); border-radius: 15px; border-color: rgba(255,255,255,0.05);">
+                <i class="fa-solid fa-database" style="color: #6366f1; font-size: 1.5rem; margin-bottom: 15px; display: block;"></i>
+                <h4 style="margin-bottom: 8px;">Vector Database</h4>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Fast person identification across large-scale face image galleries.</p>
+                <a href="#" class="btn" style="margin-top: 1.5rem; width: 100%; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent);">Explore</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar on Dashboard -->
+    <div class="card animate-up" style="border-color: var(--accent);">
+        <h3 style="font-family: 'Outfit'; margin-bottom: 1.5rem;">System Health</h3>
+        <div class="health-item" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
+                <span style="color: var(--text-secondary);">Model Memory</span>
+                <span>2.4 GB / 8 GB</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                <div style="width: 30%; height: 100%; background: var(--accent);"></div>
+            </div>
+        </div>
+        <div class="health-item" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
+                <span style="color: var(--text-secondary);">CPU Usage</span>
+                <span>15%</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                <div style="width: 15%; height: 100%; background: var(--success);"></div>
+            </div>
+        </div>
+        
+        <div class="log-stream" style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace;">[System Log] Initialized DeepFace engine...</p>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace;">[System Log] Backend: retinaface</p>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace;">[System Log] Ready for inference.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

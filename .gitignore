@@ -1,0 +1,42 @@
+# Data & Logs
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+archive/
+*.log
+*.zip
+*.db
+*.pkl
+
+# Environments & Binary
+venv/
+Venv/
+.venv/
+.env
+.deepface/
+.pytest_cache/
+.ipynb_checkpoints/
+__pycache__/
+*/__pycache__/*
+*.pyc
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+face.jpg
+app/static/favicon.png
+app/static/demo/
+.hf_token
+.claude/
+final_hf/
+vision-ai-engine/
+DEPLOYMENT_GUIDE.md
+HF_*.md
+QUICK_START_DEPLOYMENT.md
+deploy_hf.*
+deploy_prep.py
+hf_logs.html
+hf_space.html
+render.yaml

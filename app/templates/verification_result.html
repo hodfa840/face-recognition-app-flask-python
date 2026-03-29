@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">Match Evaluation</h1>
+    <p class="animate-up">Similarity verification using advanced deep neural networks.</p>
+</div>
+
+<div class="card animate-up" style="max-width: 1000px; margin: 0 auto; text-align: center;">
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 4rem;">
+        <div style="position: relative;">
+            <img src="{{ url_for('static', filename='uploads/' + img1) }}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; border: 4px solid var(--accent); box-shadow: 0 10px 30px var(--accent-glow);">
+            <div style="position: absolute; bottom: 0; right: 0; background: var(--bg-color); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">SUBJECT A</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; z-index: 2;">
+            {% if result.verified %}
+                <div style="font-size: 4rem; color: var(--success); text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 style="font-family: 'Outfit'; color: var(--success); letter-spacing: 2px;">MATCH FOUND</h2>
+            {% else %}
+                <div style="font-size: 4rem; color: var(--error); text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <h2 style="font-family: 'Outfit'; color: var(--error); letter-spacing: 2px;">NO MATCH</h2>
+            {% endif %}
+            
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 5px 20px; border-radius: 30px; border: 1px solid var(--glass-border); font-size: 0.9rem;">
+                Distance Scale: <span style="{% if result.verified %}color: var(--success);{% else %}color: var(--error);{% endif %} font-weight: 700;">{{ "%.4f"|format(result.distance) }}</span>
+            </div>
+             <p style="font-size: 0.8rem; color: var(--text-secondary);">(Threshold: {{ result.threshold }})</p>
+        </div>
+
+        <div style="position: relative;">
+            <img src="{{ url_for('static', filename='uploads/' + img2) }}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; border: 4px solid #ec4899; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);">
+            <div style="position: absolute; bottom: 0; right: 0; background: var(--bg-color); border: 1px solid #ec4899; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">SUBJECT B</div>
+        </div>
+    </div>
+
+    <!-- Metrics Breakdown Card -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+        <div class="card" style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-color: rgba(255, 255, 255, 0.05);">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Confidence</p>
+            <h4 style="font-size: 1.5rem; margin-top: 5px;">{{ "%.1f"|format((1 - result.distance) * 100 if result.distance < 1 else 0) }}%</h4>
+        </div>
+        <div class="card" style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-color: rgba(255, 255, 255, 0.05);">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Similarity Metric</p>
+            <h4 style="font-size: 1.5rem; margin-top: 5px; text-transform: capitalize;">{{ result.similarity_metric }}</h4>
+        </div>
+        <div class="card" style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-color: rgba(255, 255, 255, 0.05);">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Inference Model</p>
+            <h4 style="font-size: 1.5rem; margin-top: 5px;">{{ result.model }}</h4>
+        </div>
+    </div>
+    
+    <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 2rem;">
+        <a href="{{ url_for('recognition.verify_face') }}" class="btn" style="padding: 1rem 3rem;">
+            <i class="fa-solid fa-arrows-rotate"></i> NEW VERIFICATION
+        </a>
+    </div>
+
+    <div style="margin-top: 4rem; text-align: left;">
+        <h4 style="margin-bottom: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.75rem;">Model Response JSON</h4>
+        <pre style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px; font-size: 0.8rem; overflow-x: auto; color: #a5b4fc; text-align: left;">{{ result|tojson(indent=2) }}</pre>
+    </div>
+</div>
+{% endblock %}

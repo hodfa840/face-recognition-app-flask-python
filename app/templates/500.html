@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div style="height: 70vh; display: flex; flex-direction: column; align-items:center; justify-content:center; text-align:center;">
+    <h1 style="font-size: 8rem; font-family: 'Outfit'; color: var(--error); opacity: 0.2;">500</h1>
+    <h2 style="margin-bottom: 1.5rem; color: var(--error);">MODEL COLLISION DETECTED</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1rem;">An internal inference error occurred or the server ran out of memory (OOM).</p>
+    <p style="font-size: 0.8rem; color: var(--text-secondary); font-family: monospace; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; margin-bottom: 2rem;">[Trace: FaceDetector Initialization Failure or Image Encoding Error]</p>
+    <a href="{{ url_for('main.dashboard') }}" class="btn" style="background: var(--error); border: none;">
+        <i class="fa-solid fa-redo"></i> Restart Application Session
+    </a>
+</div>
+{% endblock %}

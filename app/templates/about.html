@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">About the Vision Engine</h1>
+    <p class="animate-up">An advanced biometric analysis suite built for modern security and social intelligence.</p>
+</div>
+
+<div class="card animate-up" style="line-height: 1.8; font-size: 1.1rem; border-left: 5px solid var(--accent);">
+    <h2 style="font-family: 'Outfit'; margin-bottom: 2rem;">Research & Methodology</h2>
+    <p style="margin-bottom: 1.5rem;">
+        This project implements a multi-model pipeline for facial biometric extraction. Unlike traditional Euclidean geometry-based approaches, it leverages **Deep Convolutional Neural Networks (CNNs)** to extract high-dimensional embedding vectors. 
+    </p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin: 3rem 0;">
+        <div class="card" style="background: rgba(255,255,255,0.02);">
+            <h4 style="color: var(--accent); margin-bottom: 1rem;">Recognition Backbone</h4>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Utilizes **VGG-Face** and **FaceNet** (developed by Google researchers). These models map face images to a compact Euclidean space where distances directly correspond to a measure of face similarity.
+            </p>
+        </div>
+        <div class="card" style="background: rgba(255,255,255,0.02);">
+            <h4 style="color: var(--accent); margin-bottom: 1rem;">Detection Strategy</h4>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Supports **RetinaFace**, a state-of-the-art pixel-wise face localization method that outperforms traditional MTCNN through a joint multi-task loss approach.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="font-family: 'Outfit'; margin-bottom: 1rem;">Technical Specifications</h3>
+    <ul style="list-style: none; padding-left: 0;">
+        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-check-circle" style="color: var(--success);"></i>
+            <span><strong>Framework:</strong> Flask with Blueprint Factory Pattern</span>
+        </li>
+        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-check-circle" style="color: var(--success);"></i>
+            <span><strong>DL Engine:</strong> TensorFlow / Keras (oneDNN Optimized)</span>
+        </li>
+        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-check-circle" style="color: var(--success);"></i>
+            <span><strong>Pre-processing:</strong> OpenCV / Pillow (Bilinear Interpolation)</span>
+        </li>
+        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-check-circle" style="color: var(--success);"></i>
+            <span><strong>UI Styling:</strong> Glassmorphism (Vanilla CSS 3.0)</span>
+        </li>
+    </ul>
+
+    <div style="margin-top: 3rem; border-top: 1px solid var(--glass-border); padding-top: 2rem; display: flex; align-items: center; justify-content: space-between;">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Revision: 2.0.4 | Engine: RetinaFace stable</p>
+        <a href="{{ url_for('main.dashboard') }}" class="btn">Return to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

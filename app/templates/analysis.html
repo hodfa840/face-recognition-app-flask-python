@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">Facial Analysis</h1>
+    <p class="animate-up">Upload an image to identify demographics and emotional state.</p>
+</div>
+
+<div class="card animate-up" id="dropzone" style="max-width: 600px; margin: 0 auto; text-align: center; border: 2px dashed rgba(37, 99, 235, 0.3); border-radius: 30px; transition: all 0.3s ease; padding: 3rem;">
+    {% if error %}
+        <div id="error-msg" style="background: rgba(239, 68, 68, 0.1); color: var(--error); padding: 1rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+        </div>
+    {% endif %}
+
+    <div id="upload-content">
+        <i class="fa-solid fa-dna" style="font-size: 4rem; color: var(--accent); margin-bottom: 1.5rem; animation: pulse 2s infinite;"></i>
+        <h2 style="font-family: 'Outfit'; margin-bottom: 1rem;">Neural Selection Zone</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 0.95rem;">Please select a clear portrait image for biometric extraction.</p>
+        
+        <form id="uploadForm" action="{{ url_for('analysis.upload_and_analyze') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" hidden accept=".jpg,.jpeg,.png">
+            <button type="button" class="btn" onclick="document.getElementById('fileInput').click()" style="padding: 1rem 3rem; font-size: 1rem; font-weight: 700; gap: 12px;">
+                <i class="fa-solid fa-camera"></i> SELECT SUBJECT
+            </button>
+        </form>
+        
+        <p style="margin-top: 2rem; font-size: 0.8rem; color: rgba(255,255,255,0.3); letter-spacing: 1px;">SUPPORTED: JPG / PNG (MAX 16MB)</p>
+    </div>
+
+    <div id="loading-content" style="display: none;">
+        <i class="fa-solid fa-microchip fa-spin" style="font-size: 4rem; color: var(--accent); margin-bottom: 2rem;"></i>
+        <h2 style="font-family: 'Outfit'; color: var(--accent);">EXTRACTING BIOMETRICS...</h2>
+        <p style="color: var(--text-secondary);">Initializing RetinaFace detector. This may take 2-5 seconds.</p>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadContent = document.getElementById('upload-content');
+    const loadingContent = document.getElementById('loading-content');
+    const dropzone = document.getElementById('dropzone');
+
+    fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // VALIDATION
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            alert("⚠️ UNSUPPORTED FORMAT: Please select a JPG or PNG image.");
+            fileInput.value = '';
+            return;
+        }
+
+        // UI TRANSITION
+        uploadContent.style.display = 'none';
+        loadingContent.style.display = 'block';
+        dropzone.style.borderStyle = 'solid';
+        dropzone.style.borderColor = 'var(--accent)';
+        
+        uploadForm.submit();
+    };
+</script>
+
+<div class="card animate-up" style="margin-top: 3rem;">
+    <h3 style="margin-bottom: 1.5rem; font-family: 'Outfit';">Engine Details</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div style="background: rgba(37, 99, 235, 0.05); padding: 1rem; border-radius: 12px; border-left: 4px solid var(--accent);">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px;">Detector</p>
+            <p style="font-weight: 600;">RetinaFace (SOTA)</p>
+        </div>
+        <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 12px; border-left: 4px solid var(--success);">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px;">Backends</p>
+            <p style="font-weight: 600;">TensorFlow + Keras</p>
+        </div>
+        <div style="background: rgba(99, 102, 241, 0.05); padding: 1rem; border-radius: 12px; border-left: 4px solid #6366f1;">
+            <p style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px;">Metrics</p>
+            <p style="font-weight: 600;">Confidence-Weighted</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

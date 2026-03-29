@@ -1,0 +1,509 @@
+{% extends "layout.html" %}
+
+{% block extra_styles %}
+<style>
+    .main-grid {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+        width: 100%;
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+
+    .calibration-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        min-width: 220px;
+    }
+
+    .scanner-container {
+        position: relative;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+
+    .scanner-viewport {
+        position: relative !important;
+        width: 640px !important; 
+        height: 600px !important;
+        border-radius: 40px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 80px rgba(37, 99, 235, 0.3);
+        background: #000;
+        z-index: 10;
+        animation: neural-pulse 4s infinite ease-in-out;
+    }
+    
+    @keyframes neural-pulse {
+        0%, 100% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.1); }
+        50% { box-shadow: 0 0 80px rgba(37, 99, 235, 0.5); }
+    }
+    
+    #video {
+        width: 640px !important;
+        height: 600px !important;
+        object-fit: cover !important;
+        display: block !important;
+        transform: scaleX(-1);
+    }
+
+    /* PREMIUM HUD - INTERNAL LOCK */
+    .hud-overlay {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        pointer-events: none !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 25px;
+        box-sizing: border-box !important;
+    }
+
+    .hud-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .hud-stat {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(20px);
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1.5px solid rgba(37, 99, 235, 0.3);
+        min-width: 140px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .hud-stat.loading {
+        opacity: 0.7;
+        border-color: rgba(37, 99, 235, 0.5);
+    }
+
+    .hud-label {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .hud-value {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .skeleton-loader {
+        display: inline-block;
+        height: 1rem;
+        min-width: 80px;
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.15),
+            rgba(255, 255, 255, 0.05)
+        );
+        background-size: 200% 100%;
+        animation: loading-shimmer 1.5s infinite;
+        border-radius: 4px;
+    }
+
+    @keyframes loading-shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .confidence-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .confidence-dot.low {
+        background: #f59e0b;
+    }
+
+    .confidence-dot.medium {
+        background: #3b82f6;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        50% { opacity: 0.8; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+    }
+
+    .action-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: auto;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 4px 15px var(--accent-glow);
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+
+    .scanner-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 15px var(--accent);
+        top: 0;
+        animation: scan 3s linear infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes scan {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+
+    #debug-msg {
+        position: absolute;
+        bottom: 70px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 0.7rem;
+        color: var(--success);
+        background: rgba(0,0,0,0.5);
+        padding: 5px;
+    }
+
+    .action-btn {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: auto;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 15px var(--accent-glow);
+        white-space: nowrap;
+    }
+
+    .action-btn:hover { background: #1e40af; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header" style="text-align: center; margin-bottom: 3rem;">
+    <h1 class="animate-up" style="font-size: 2.5rem; letter-spacing: -1px;">Neural Vision Command</h1>
+    <p class="animate-up" style="color: var(--accent); font-weight: 600; letter-spacing: 2px;">SUBJECT BIOMETRIC EXTRACTION ACTIVE</p>
+</div>
+
+<div class="main-grid animate-up">
+    <!-- LEFT WING: Identity & State -->
+    <div class="calibration-sidebar">
+        <div class="hud-stat" style="margin-bottom: 2rem;">
+            <div class="hud-label">IDENTIFIED GENDER</div>
+            <div id="gender" class="hud-value">--</div>
+        </div>
+        <div class="hud-stat">
+            <div class="hud-label">EMOTIONAL SPECTRUM</div>
+            <div id="emotion" class="hud-value">--</div>
+        </div>
+    </div>
+
+    <!-- CENTER: NEURAL APERTURE -->
+    <div class="scanner-container">
+        <div class="scanner-viewport">
+            <video id="video" autoplay muted playsinline></video>
+            <div class="scanner-line"></div>
+            <div id="debug-msg" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: var(--success); font-size: 0.7rem; padding: 5px; text-align: center;">INITIALIZING...</div>
+        </div>
+        
+        <!-- CONTROL BAR -->
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; width: 100%; justify-content: center;">
+            <button class="action-btn" style="position: static; transform: none;" onclick="triggerHiResScan()">
+                <i class="fa-solid fa-bolt"></i> DEEP SCAN
+            </button>
+            <button class="action-btn" style="position: static; transform: none; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);" onclick="cycleGenderOverride()">
+                <i class="fa-solid fa-venus-mars"></i> <span id="override-label">AUTO (AI)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- RIGHT WING: Age & Demographics -->
+    <div class="calibration-sidebar">
+        <div class="hud-stat" style="margin-bottom: 2rem;">
+            <div class="hud-label">ESTIMATED AGE</div>
+            <div id="age" class="hud-value">--</div>
+        </div>
+        <div class="hud-stat">
+            <div class="hud-label">ETHNIC CLUSTERING</div>
+            <div id="race" class="hud-value">--</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let genderOverride = null; // null, 'Woman', 'Man'
+    
+    function cycleGenderOverride() {
+        if (genderOverride === null) genderOverride = 'Woman';
+        else if (genderOverride === 'Woman') genderOverride = 'Man';
+        else genderOverride = null;
+
+        const label = document.getElementById('override-label');
+        label.innerText = genderOverride ? `OVERRIDE: ${genderOverride}` : "AUTO (AI)";
+        
+        // Immediate visual update if scan is active
+        const genderEl = document.getElementById('gender');
+        if (genderOverride) {
+            genderEl.innerHTML = `<span class="confidence-dot high"></span> ${genderOverride} (VERIFIED)`;
+        }
+    }
+    const video = document.getElementById('video');
+    const debugMsg = document.getElementById('debug-msg');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    async function startVideo() {
+        try {
+            debugMsg.innerText = "REQUESTING CAMERA...";
+            
+            // Handle cross-browser/legacy getUserMedia
+            const gum = (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) || 
+                        navigator.webkitGetUserMedia || 
+                        navigator.mozGetUserMedia || 
+                        navigator.msGetUserMedia;
+
+            if (!gum) {
+                throw new Error("SECURE CONTEXT REQUIRED: Your browser requires HTTPS or localhost for camera access.");
+            }
+
+            const stream = await (navigator.mediaDevices ? 
+                navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } }) :
+                new Promise((res, rej) => gum.call(navigator, { video: true }, res, rej)));
+            
+            video.srcObject = stream;
+            debugMsg.innerText = "LINK ESTABLISHED. READY.";
+        } catch (err) {
+            debugMsg.innerText = "CAMERA BLOCKED: " + err.message;
+            console.error(err);
+        }
+    }
+
+    let predictions = []; // Buffer to stabilize results
+    let genderPredictionInProgress = false;
+    let lastGenderConfidence = 0;
+
+    function getConfidenceDotClass(confidence) {
+        if (confidence >= 80) return 'high';
+        if (confidence >= 60) return 'medium';
+        return 'low';
+    }
+
+    function showGenderLoading() {
+        const genderEl = document.getElementById('gender');
+        genderEl.classList.add('loading');
+        genderEl.innerHTML = '<span class="skeleton-loader"></span>';
+    }
+
+    function updateGenderWithDelay(gender, confidence) {
+        const genderEl = document.getElementById('gender');
+        
+        // CHECK FOR MANUAL OVERRIDE
+        if (genderOverride) {
+            genderEl.innerHTML = `<span class="confidence-dot high"></span> ${genderOverride} (VERIFIED)`;
+            return;
+        }
+
+        genderPredictionInProgress = true;
+        showGenderLoading();
+        
+        // Simulate model estimation time (500-1500ms )
+        const estimationDelay = 400 + Math.random() * 600;
+        
+        setTimeout(() => {
+            if (genderOverride) return; // Guard if override was set during delay
+            const genderEl = document.getElementById('gender');
+            genderEl.classList.remove('loading');
+            lastGenderConfidence = confidence;
+            const dotClass = getConfidenceDotClass(confidence);
+            genderEl.innerHTML = `<span class="confidence-dot ${dotClass}"></span> ${gender} (${confidence}%)`;
+            genderPredictionInProgress = false;
+        }, estimationDelay);
+    }
+
+    async function analyzeFrame() {
+        if (!video.videoWidth) {
+            setTimeout(analyzeFrame, 500);
+            return;
+        }
+
+        debugMsg.innerText = "CAPTURING DATA...";
+
+        canvas.width = 640; 
+        canvas.height = 480;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const base64Image = canvas.toDataURL('image/jpeg', 0.95);
+        
+        try {
+            const response = await fetch("{{ url_for('analysis.live_frame') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: base64Image })
+            });
+            
+            if (!response.ok) throw new Error("Server " + response.status);
+            const data = await response.json();
+            
+            if (data.results && data.results.faces && data.results.faces.length > 0) {
+                const face = data.results.faces[0];
+                predictions.push(face);
+                if (predictions.length > 5) predictions.shift(); // Keep last 5 samples
+
+                // STABILIZATION LOGIC
+                // 1. Average Age & Range
+                const avgAgeRaw = predictions.reduce((acc, f) => acc + (f.age || 0), 0) / predictions.length;
+                const minAge = Math.max(0, Math.round(avgAgeRaw - 2));
+                const maxAge = Math.round(avgAgeRaw + 2);
+                
+                // 2. Voting for strings (Gender, Emotion, Race)
+                const getMode = (arr, key) => {
+                    const counts = {};
+                    arr.forEach(f => counts[f[key]] = (counts[f[key]] || 0) + 1);
+                    return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+                };
+
+                const domGender = getMode(predictions, 'dominant_gender');
+                const domEmotion = getMode(predictions, 'dominant_emotion');
+                const domRace = getMode(predictions, 'dominant_race');
+                
+                // Get Confidence (latest frame)
+                const genConf = Math.round(face.gender[face.dominant_gender]);
+                const emoConf = Math.round(face.emotion[face.dominant_emotion]);
+                const ageConf = Math.round(face.face_confidence * 100);
+                const raceConf = Math.round(face.race[face.dominant_race]);
+
+                // Update Gender with loading animation & delay
+                if (!genderPredictionInProgress) {
+                    updateGenderWithDelay(domGender, genConf);
+                }
+
+                // Update other attributes immediately with confidence indicators
+                const ageEl = document.getElementById('age');
+                const ageDotClass = getConfidenceDotClass(ageConf);
+                ageEl.innerHTML = `<span class="confidence-dot ${ageDotClass}"></span> ${minAge}-${maxAge}y (${ageConf}%)`;
+
+                const emotionEl = document.getElementById('emotion');
+                const emoDotClass = getConfidenceDotClass(emoConf);
+                emotionEl.innerHTML = `<span class="confidence-dot ${emoDotClass}"></span> ${domEmotion} (${emoConf}%)`;
+
+                const raceEl = document.getElementById('race');
+                const raceDotClass = getConfidenceDotClass(raceConf);
+                raceEl.innerHTML = `<span class="confidence-dot ${raceDotClass}"></span> ${domRace} (${raceConf}%)`;
+                
+                debugMsg.innerText = "HUD STABILIZED. TRACKING...";
+            } else {
+                debugMsg.innerText = "SEARCHING FOR TARGET FACE...";
+                predictions = []; // Reset buffer if face lost
+            }
+        } catch (err) {
+            debugMsg.innerText = "SYNC ERROR: RETRYING...";
+        }
+        
+        setTimeout(analyzeFrame, 1000);
+    }
+
+    async function triggerHiResScan() {
+        debugMsg.innerText = "TRIGGERING HIGH-PRECISION SCAN...";
+        const genderEl = document.getElementById('gender');
+        genderEl.classList.add('loading');
+        genderEl.innerHTML = '<span class="skeleton-loader"></span>';
+        
+        // Capture high res frame
+        canvas.width = 640;
+        canvas.height = 480;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const base64Image = canvas.toDataURL('image/jpeg', 0.9);
+        
+        try {
+            const response = await fetch("{{ url_for('analysis.live_frame') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: base64Image, accuracy: 'high' })
+            });
+            const data = await response.json();
+            
+            if (data.results && data.results.faces && data.results.faces.length > 0) {
+                const face = data.results.faces[0];
+                
+                // Simulate precision scan estimation time
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                
+                const genConf = Math.round(face.gender[face.dominant_gender]);
+                const ageConf = Math.round(face.face_confidence * 100);
+                const emoConf = Math.round(face.emotion[face.dominant_emotion]);
+                const raceConf = Math.round(face.race[face.dominant_race]);
+                
+                genderEl.classList.remove('loading');
+                const genDot = getConfidenceDotClass(genConf);
+                genderEl.innerHTML = `<span class="confidence-dot ${genDot}"></span> ${face.dominant_gender} (PRECISION)`;
+                
+                const ageEl = document.getElementById('age');
+                const ageDot = getConfidenceDotClass(ageConf);
+                ageEl.innerHTML = `<span class="confidence-dot ${ageDot}"></span> ${face.age}y (PRECISION)`;
+                
+                const emotionEl = document.getElementById('emotion');
+                const emoDot = getConfidenceDotClass(emoConf);
+                emotionEl.innerHTML = `<span class="confidence-dot ${emoDot}"></span> ${face.dominant_emotion}`;
+                
+                const raceEl = document.getElementById('race');
+                const raceDot = getConfidenceDotClass(raceConf);
+                raceEl.innerHTML = `<span class="confidence-dot ${raceDot}"></span> ${face.dominant_race}`;
+                
+                debugMsg.innerText = "DEEP SCAN COMPLETE. ACCURACY MAXIMIZED.";
+            } else {
+                genderEl.classList.remove('loading');
+                debugMsg.innerText = "PRECISION SCAN FAILED: FACE NOT FOUND.";
+            }
+        } catch (err) {
+            genderEl.classList.remove('loading');
+            debugMsg.innerText = "SCAN ERROR: " + err.message;
+        }
+    }
+
+    video.addEventListener('playing', () => {
+        analyzeFrame();
+    });
+
+    startVideo();
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="header">
+    <h1 class="animate-up">Analysis Results</h1>
+    <p class="animate-up" style="font-weight: 500;">Processed in <span style="color: var(--accent); font-weight: 700;">{{ "%.2f"|format(result.process_time) }}s</span> • <span style="color: var(--success);">✓ {{ result.count }} face(s) detected</span></p>
+</div>
+
+<div class="grid-container" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem;">
+    <!-- Image Preview Panel -->
+    <div class="card animate-up" style="padding: 1rem; overflow: hidden; border-radius: 20px; display: flex; flex-direction: column; gap: 1.5rem; position: sticky; top: 2rem;">
+        <div style="position: relative; border-radius: 15px; overflow: hidden; border: 1px solid var(--glass-border);">
+            <img src="{{ url_for('static', filename='uploads/' + image) }}" style="width: 100%; display: block; border-radius: 15px;">
+            <div style="position: absolute; top: 10px; right: 10px; background: rgba(16, 185, 129, 0.9); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">{{ result.count }} Face(s)</div>
+        </div>
+        <a href="{{ url_for('analysis.index') }}" class="btn" style="justify-content: center; width: 100%; padding: 1rem; font-weight: 700; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-arrows-rotate"></i> NEW ANALYSIS
+        </a>
+    </div>
+
+    <!-- Results Panel -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        {% for face in result.faces %}
+            <div class="card animate-up" style="border-left: 4px solid var(--accent); overflow: hidden;">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+                    <h2 style="font-family: 'Outfit'; font-size: 1.3rem; margin: 0;">Subject #{{ loop.index }}</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <span style="font-size: 0.85rem; color: white; background: rgba(16, 185, 129, 0.15); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600;">
+                            <i class="fa-solid fa-face-smile" style="color: var(--success); margin-right: 5px;"></i>
+                            {{ "%.1f"|format(face.face_confidence * 100) }}% Match
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Demographics Stats Grid -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2.5rem;">
+                    <!-- Gender -->
+                    <div style="padding: 1.5rem; background: rgba(37, 99, 235, 0.08); border-radius: 12px; border: 1px solid rgba(37, 99, 235, 0.2);">
+                        <p style="text-transform: uppercase; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Gender Identification</p>
+                        <h3 style="font-size: 1.8rem; color: var(--accent); font-weight: 800; margin-bottom: 8px;">{{ face.dominant_gender }}</h3>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="flex: 1; height: 4px; background: rgba(37, 99, 235, 0.2); border-radius: 2px; overflow: hidden;">
+                                <div style="width: {{ face.gender[face.dominant_gender] }}%; height: 100%; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 0.6s ease;"></div>
+                            </div>
+                            <span style="color: var(--text-secondary); font-size: 0.8rem; min-width: 35px; text-align: right;">{{ "%.0f"|format(face.gender[face.dominant_gender]) }}%</span>
+                        </div>
+                    </div>
+
+                    <!-- Age -->
+                    <div style="padding: 1.5rem; background: rgba(59, 130, 246, 0.08); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <p style="text-transform: uppercase; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Predicted Age</p>
+                        <h3 style="font-size: 1.8rem; color: #60a5fa; font-weight: 800; margin-bottom: 8px;">{{ face.age }} years</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">Age range estimation ± 2 years</p>
+                    </div>
+
+                    <!-- Emotion -->
+                    <div style="padding: 1.5rem; background: rgba(249, 115, 22, 0.08); border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.2);">
+                        <p style="text-transform: uppercase; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Emotional State</p>
+                        <h3 style="font-size: 1.6rem; color: #f97316; font-weight: 800; margin-bottom: 8px;">{{ face.dominant_emotion | capitalize }}</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">Primary emotion detected</p>
+                    </div>
+
+                    <!-- Ethnicity -->
+                    <div style="padding: 1.5rem; background: rgba(139, 92, 246, 0.08); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                        <p style="text-transform: uppercase; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Ethnicity / Race</p>
+                        <h3 style="font-size: 1.6rem; color: #a855f7; font-weight: 800; margin-bottom: 8px;">{{ face.dominant_race | capitalize }}</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">Dominant ethnicity classification</p>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdowns -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Emotions Breakdown -->
+                    <div>
+                        <h4 style="margin-bottom: 1.2rem; color: var(--text-primary); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Emotional Breakdown</h4>
+                        {% for emotion, score in face.emotion.items() %}
+                            <div style="margin-bottom: 1.2rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
+                                    <span style="text-transform: capitalize; font-weight: 500;">{{ emotion }}</span>
+                                    <span style="color: var(--accent); font-weight: 700;">{{ "%.1f"|format(score) }}%</span>
+                                </div>
+                                <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                    <div style="width: {{ score }}%; height: 100%; background: {% if emotion == face.dominant_emotion %}linear-gradient(90deg, #f97316, #fb923c){% else %}rgba(59, 130, 246, 0.4){% endif %}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Ethnicity Breakdown -->
+                    <div>
+                        <h4 style="margin-bottom: 1.2rem; color: var(--text-primary); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Ethnicity Distribution</h4>
+                        {% for race, score in face.race.items() %}
+                            <div style="margin-bottom: 1.2rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
+                                    <span style="text-transform: capitalize; font-weight: 500;">{{ race }}</span>
+                                    <span style="color: #a855f7; font-weight: 700;">{{ "%.1f"|format(score) }}%</span>
+                                </div>
+                                <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                    <div style="width: {{ score }}%; height: 100%; background: {% if race == face.dominant_race %}linear-gradient(90deg, #a855f7, #d946ef){% else %}rgba(139, 92, 246, 0.3){% endif %}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- JSON Output Section -->
+<div class="card animate-up" style="margin-top: 3rem; background: rgba(255, 255, 255, 0.015); border: 1px dashed var(--glass-border);">
+    <h4 style="margin-bottom: 1.2rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Raw Model Output (JSON)</h4>
+    <pre style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 0.75rem; overflow-x: auto; color: #a5b4fc; font-family: 'Courier New', monospace; line-height: 1.5;">{{ result|tojson(indent=2) }}</pre>
+</div>
+{% endblock %}
