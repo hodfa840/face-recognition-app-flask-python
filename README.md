@@ -14,7 +14,9 @@ pinned: false
 A professional-grade, Flask-powered facial biometric engine capable of real-time clinical demographics analysis and cross-occlusion identity verification (e.g., matching across hijabs, glasses, and ages). 🚀✨
 
 ## 🔗 Live Deployment
-Experience the live engine here: **[Vision.AI Dashboard on Hugging Face](https://huggingface.co/spaces/Hodfa71/vision-ai-engine)**
+**[▶ Launch Vision.AI Engine](https://hodfa71-vision-ai-engine.hf.space)**
+
+> **Note:** Hosted on Hugging Face Spaces free tier. The first request may be slow (10–30 seconds) as the app wakes from sleep and loads AI model weights into memory. Subsequent requests are fast.
 
 ## 🌟 Key Features
 - **Neural Vision HUD (Live Mode)**: Real-time 640x600 biometric scanner with clinical-grade sharpening and stabilization.
@@ -28,7 +30,7 @@ Experience the live engine here: **[Vision.AI Dashboard on Hugging Face](https:/
 - **Engine**: [DeepFace](https://github.com/serengil/deepface) (VGG-Face, ArcFace, RetinaFace detector)
 - **Backend**: Flask 3.0, TensorFlow 2.13+, OpenCV (Headless)
 - **Frontend**: Vanilla HTML5/CSS3 (Glassmorphism), Font-Awesome 6
-- **Stability**: Custom PIL-based pre-processing (Sharpness: 2.5x, Contrast: 1.4x)
+- **Stability**: Neural stabilization buffer with weighted voting across live frames
 
 ## 🎨 Local Setup & Launch
 1. **Initialize Environment**:
