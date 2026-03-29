@@ -1,56 +1,39 @@
-# VISION.AI - Hugging Face Spaces (Optimized)
-FROM python:3.10-slim
+# VISION.AI - Hugging Face Spaces
+# Use tensorflow base image - tensorflow pre-installed, no 300MB download
+FROM tensorflow/tensorflow:2.15.0
 
-# Set environment variables for non-root user
 ENV DEEPFACE_HOME=/home/user
-ENV MPLCONFIGDIR=/home/user/.matplotlib
-ENV HF_HOME=/home/user/.cache/huggingface
 ENV PORT=7860
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies for OpenCV and DeepFace
+# System dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Setup non-root user (Standard for Hugging Face Spaces)
+# Setup non-root user
 RUN useradd -m -u 1000 user
 USER user
 WORKDIR /home/user/app
-
-# Set PATH for the new user
 ENV PATH="/home/user/.local/bin:${PATH}"
 
-# Prepare directories with correct permissions (Hugging Face /home/user is writable)
 RUN mkdir -p /home/user/.deepface/weights \
     && mkdir -p /home/user/app/static/uploads
 
-# Install core dependencies first (TensorFlow is the largest)
+# Install remaining dependencies (no tensorflow here - already in base image)
 COPY --chown=user:user requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip
-RUN echo ">>> Installing tensorflow-cpu (large download, may take 5-10 min)..." && \
-    pip install --no-cache-dir tensorflow-cpu==2.15.1 && \
-    echo ">>> tensorflow-cpu done."
-RUN echo ">>> Installing remaining dependencies..." && \
-    pip install --no-cache-dir -r requirements.txt && \
-    echo ">>> All dependencies done."
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download models during BUILD phase (Ensures runtime stability)
+# Download model weights from HF Hub
 COPY --chown=user:user scripts/build_models.py scripts/build_models.py
 RUN python scripts/build_models.py
 
-# Copy the rest of the application
+# Copy application
 COPY --chown=user:user . .
 
-# Ensure the upload folder is definitely writable by the app
-RUN chmod 777 /home/user/app/static/uploads
-
 EXPOSE 7860
-
-# CMD to start the Gunicorn server
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:7860", "--timeout", "300", "run:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:7860", "--timeout", "300", "--access-logfile", "-", "--error-logfile", "-", "run:app"]
