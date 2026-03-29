@@ -15,6 +15,7 @@ os.makedirs(WEIGHTS_DIR, exist_ok=True)
 
 HF_REPO = "Hodfa71/deepface-weights"
 MODEL_FILES = [
+    "vgg_face_weights.h5",
     "age_model_weights.h5",
     "gender_model_weights.h5",
     "facial_expression_model_weights.h5",
