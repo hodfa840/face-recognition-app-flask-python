@@ -19,7 +19,7 @@ ENV PORT=7860
 # Install Python dependencies first (cached layer)
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --timeout 120 --retries 3 -r requirements.txt
 
 # Copy only the build script, then download models
 # (kept in a separate layer so code changes don't re-download models)
