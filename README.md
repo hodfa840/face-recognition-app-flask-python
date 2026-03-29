@@ -8,7 +8,7 @@ pinned: false
 ---
 
 ## 📊 Biometric Case Study: Neural Occlusion Bypass
-![Match Proof](app/static/demo/cv_match.png)
+![Match Proof](https://raw.githubusercontent.com/hodfa840/face-recognition-app-flask-python/main/image.png)
 *Identity confirmed across hijab occlusion using deep face detection.*
 
 A professional-grade, Flask-powered facial biometric engine capable of real-time demographics analysis and cross-occlusion identity verification (e.g., matching across hijabs, glasses, and ages).
