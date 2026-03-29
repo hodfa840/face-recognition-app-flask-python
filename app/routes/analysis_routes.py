@@ -5,7 +5,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 from werkzeug.utils import secure_filename
-from ..utils.ml_engine import analyzer, FaceAnalyzer
+from ..utils.ml_engine import analyzer
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
@@ -89,14 +89,8 @@ def live_frame():
         img.save(temp_path, "JPEG", quality=95)
         
         # Set accuracy backend
-        accuracy = data.get('accuracy', 'standard')
-        if accuracy == 'high':
-            # Temporary hi-res analyzer for this specific frame
-            hi_res_analyzer = FaceAnalyzer(detector_backend='retinaface')
-            result = hi_res_analyzer.analyze(temp_path)
-        else:
-            # Use global high-speed analyzer
-            result = analyzer.analyze(temp_path)
+        # Always use the shared opencv-based analyzer (no retinaface weights needed)
+        result = analyzer.analyze(temp_path)
         
         # Cleanup
         if os.path.exists(temp_path):
