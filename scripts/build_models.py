@@ -8,8 +8,9 @@ import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 
-os.environ["DEEPFACE_HOME"] = "/app"
-WEIGHTS_DIR = "/app/.deepface/weights"
+# Use DEEPFACE_HOME from env (set in Dockerfile) or fallback to user home
+DEEPFACE_HOME = os.environ.get("DEEPFACE_HOME", os.path.expanduser("~"))
+WEIGHTS_DIR = os.path.join(DEEPFACE_HOME, ".deepface", "weights")
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 
 HF_REPO = "Hodfa71/deepface-weights"
