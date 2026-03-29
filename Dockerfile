@@ -12,17 +12,34 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Tell DeepFace where to store models (baked into the image at /app/.deepface/weights)
 ENV DEEPFACE_HOME=/app
 ENV PORT=7860
 
-# Install Python dependencies first (cached layer)
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --timeout 120 --retries 3 -r requirements.txt
+
+# Step 1: upgrade pip
+RUN pip install --no-cache-dir --upgrade pip
+
+# Step 2: install tensorflow-cpu first (largest package, isolated for visibility)
+RUN pip install --no-cache-dir --timeout 180 --retries 5 tensorflow-cpu==2.13.0
+
+# Step 3: install tf-keras (depends on tensorflow)
+RUN pip install --no-cache-dir --timeout 60 tf-keras
+
+# Step 4: install everything else
+RUN pip install --no-cache-dir --timeout 120 --retries 3 \
+    flask>=3.0.0 \
+    flask-cors>=4.0.0 \
+    opencv-python-headless>=4.8.0 \
+    deepface>=0.0.86 \
+    "numpy>=1.24.0,<2.0" \
+    pillow>=10.0.0 \
+    python-dotenv>=1.0.0 \
+    gunicorn>=21.2.0 \
+    "werkzeug>=3.0.0" \
+    "huggingface_hub>=0.20.0"
 
 # Copy only the build script, then download models
-# (kept in a separate layer so code changes don't re-download models)
 COPY scripts/build_models.py scripts/build_models.py
 RUN python scripts/build_models.py
 
@@ -31,5 +48,4 @@ COPY . .
 
 EXPOSE 7860
 
-# 1 worker = 1 copy of models in RAM, no OOM
 CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:7860", "--timeout", "300", "--access-logfile", "-", "--error-logfile", "-", "run:app"]
