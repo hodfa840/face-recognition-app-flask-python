@@ -21,7 +21,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip
 
 # Step 2: install tensorflow-cpu first (largest package, isolated for visibility)
-RUN pip install --no-cache-dir --timeout 180 --retries 5 tensorflow-cpu==2.15.1
+RUN pip install --no-cache-dir --timeout 180 --retries 5 --progress-bar on tensorflow-cpu==2.15.1
 
 # Step 3: install tf-keras (depends on tensorflow)
 RUN pip install --no-cache-dir --timeout 60 tf-keras
