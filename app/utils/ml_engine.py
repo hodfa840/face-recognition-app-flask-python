@@ -77,13 +77,15 @@ class FaceAnalyzer:
                 faces = []
                 for face in detection_results:
                     faces.append({
-                        "face_confidence": face['confidence'],
-                        "dominant_gender": "Download Failed",
-                        "age": "??",
-                        "dominant_emotion": "See Logs",
-                        "dominant_race": "Missing Models",
-                        "emotion": {},
-                        "warning": "Neural weights (age/gender/emotion) failed to download from GitHub. Please check server logs for manual download instructions."
+                        "face_confidence": face.get('confidence', 0),
+                        "dominant_gender": "Unknown",
+                        "gender": {"Unknown": 100.0},
+                        "age": 0,
+                        "dominant_emotion": "unknown",
+                        "emotion": {"unknown": 100.0},
+                        "dominant_race": "unknown",
+                        "race": {"unknown": 100.0},
+                        "warning": "AI model weights are missing. Face detected but analysis unavailable."
                     })
                 fallback_results = {"faces": faces, "count": len(faces), "process_time": 0.5, "partial": True}
                 return FaceAnalyzer._sanitize_results(fallback_results)

@@ -2,10 +2,9 @@ from flask import Blueprint, render_template, request, flash, current_app, jsoni
 import os
 import uuid
 from werkzeug.utils import secure_filename
-from ..utils.ml_engine import FaceAnalyzer
+from ..utils.ml_engine import analyzer
 
 bp = Blueprint('recognition', __name__, url_prefix='/recognition')
-analyzer = FaceAnalyzer()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
