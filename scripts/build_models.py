@@ -17,6 +17,7 @@ MODEL_FILES = [
     "gender_model_weights.h5",
     "facial_expression_model_weights.h5",
     "race_model_single_batch.h5",
+    "retinaface.h5",
 ]
 
 

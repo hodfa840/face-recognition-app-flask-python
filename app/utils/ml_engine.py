@@ -8,7 +8,7 @@ import time
 logger = logging.getLogger(__name__)
 
 class FaceAnalyzer:
-    def __init__(self, detector_backend='opencv'):
+    def __init__(self, detector_backend='retinaface'):
         """
         Face recognition and analysis engine using DeepFace.
         'opencv' is used for lightweight deployment (avoids OOM on HF Spaces).
