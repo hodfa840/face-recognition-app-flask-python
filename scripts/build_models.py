@@ -6,6 +6,7 @@ Models are baked into the image so no runtime download is needed.
 """
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 
 os.environ["DEEPFACE_HOME"] = "/app"
 WEIGHTS_DIR = "/app/.deepface/weights"
@@ -40,12 +41,15 @@ def try_hf_hub():
                 print(f"  {filename} not in HF repo, skipping.", flush=True)
                 continue
             print(f"  Downloading {filename} from HF Hub...", flush=True)
-            hf_hub_download(
-                repo_id=HF_REPO,
-                filename=filename,
-                local_dir=WEIGHTS_DIR,
-                local_dir_use_symlinks=False,
-            )
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(
+                    hf_hub_download,
+                    repo_id=HF_REPO,
+                    filename=filename,
+                    local_dir=WEIGHTS_DIR,
+                    local_dir_use_symlinks=False,
+                )
+                future.result(timeout=300)  # 5 minute cap per file
             print(f"  {filename} ready.", flush=True)
         return True
     except Exception as exc:
