@@ -1,0 +1,31 @@
+# EXCLUDE HEAVY FILES FROM DOCKER BUILD CONTEXT
+# This fixes the "No Logs" hanging on Hugging Face during upload
+.git
+.github
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.env
+
+# REDUNDANT FOLDERS (Project Archive)
+archive/
+final_hf/
+vision-ai-engine/
+node_modules/
+
+# LOCAL WEIGHTS (Will be downloaded during build for stability)
+.deepface/weights/*
+! .deepface/weights/.gitkeep
+models/*.h5
+
+# LOGS & TEMPS
+*.log
+app/static/uploads/*
+! app/static/uploads/.gitkeep
+.ipynb_checkpoints
+.claude
+.hf_token
