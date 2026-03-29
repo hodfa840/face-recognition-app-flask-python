@@ -1,10 +1,6 @@
-.gitattributes
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.hf filter=lfs diff=lfs merge=lfs -text
-*.pb filter=lfs diff=lfs merge=lfs -text
+# REMOVE LFS FOR IMAGES - THIS HANGS ON HF SPACES
+# KEEP IT ONLY FOR LARGE BINARIES IF ABSOLUTELY NECESSARY
+# BUT WE DOWNLOAD THEM AT BUILD TIME ANYWAY
 *.h5 filter=lfs diff=lfs merge=lfs -text
-*.pkl filter=lfs diff=lfs merge=lfs -text
-models/ filter=lfs diff=lfs merge=lfs -text
 *.weights filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
