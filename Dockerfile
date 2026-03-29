@@ -32,9 +32,13 @@ RUN mkdir -p /home/user/.deepface/weights \
 
 # Install core dependencies first (TensorFlow is the largest)
 COPY --chown=user:user requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir tensorflow-cpu==2.15.1 \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip
+RUN echo ">>> Installing tensorflow-cpu (large download, may take 5-10 min)..." && \
+    pip install --no-cache-dir tensorflow-cpu==2.15.1 && \
+    echo ">>> tensorflow-cpu done."
+RUN echo ">>> Installing remaining dependencies..." && \
+    pip install --no-cache-dir -r requirements.txt && \
+    echo ">>> All dependencies done."
 
 # Pre-download models during BUILD phase (Ensures runtime stability)
 COPY --chown=user:user scripts/build_models.py scripts/build_models.py
