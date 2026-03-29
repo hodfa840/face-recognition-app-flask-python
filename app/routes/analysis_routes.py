@@ -78,13 +78,8 @@ def live_frame():
         temp_filename = f"live_{uuid.uuid4()}.jpg"
         temp_path = os.path.join(current_app.config['UPLOAD_FOLDER'], temp_filename)
         
-        # Load and Enhance for AI precision
+        # Save frame as-is — aggressive sharpening/contrast hurts gender CNN accuracy
         img = Image.open(BytesIO(image_data))
-        from PIL import ImageEnhance
-        enhancer = ImageEnhance.Sharpness(img)
-        img = enhancer.enhance(2.2) # High intensity sharpening for glasses
-        contrast = ImageEnhance.Contrast(img)
-        img = contrast.enhance(1.4)
         img = img.convert("RGB")
         img.save(temp_path, "JPEG", quality=95)
         

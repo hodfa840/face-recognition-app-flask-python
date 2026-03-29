@@ -405,12 +405,15 @@
                 const domGender = getMode(predictions, 'dominant_gender');
                 const domEmotion = getMode(predictions, 'dominant_emotion');
                 const domRace = getMode(predictions, 'dominant_race');
-                
-                // Get Confidence (latest frame)
-                const genConf = Math.round(face.gender[face.dominant_gender]);
-                const emoConf = Math.round(face.emotion[face.dominant_emotion]);
+
+                // Average confidence for the voted label across buffered frames (not just latest)
+                const avgConf = (arr, label, key) =>
+                    Math.round(arr.reduce((sum, f) => sum + (f[key][label] || 0), 0) / arr.length);
+
+                const genConf = avgConf(predictions, domGender, 'gender');
+                const emoConf = avgConf(predictions, domEmotion, 'emotion');
+                const raceConf = avgConf(predictions, domRace, 'race');
                 const ageConf = Math.round(face.face_confidence * 100);
-                const raceConf = Math.round(face.race[face.dominant_race]);
 
                 // Update Gender with loading animation & delay
                 if (!genderPredictionInProgress) {
