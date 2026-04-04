@@ -11,7 +11,7 @@ pinned: false
 
 Vision AI is a high-performance facial biometrics and analysis dashboard. It uses deep neural networks to provide real-time gender identification, age estimation, emotional spectrum analysis, and ethnicity classification directly from a webcam or image upload.
 
-![Biometric Evaluation](image.png)
+![Biometric Evaluation](https://raw.githubusercontent.com/hodfa840/face-recognition-app-flask-python/main/image.png)
 
 ## Core Features
 *   **Live Facial Scanning**: Real-time biometric HUD with neural stabilization for consistent tracking.
