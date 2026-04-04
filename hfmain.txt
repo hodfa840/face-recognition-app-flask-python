@@ -1,1 +1,0 @@
-f7b4320 docs: add face verification screenshot to README

@@ -1,3 +1,0 @@
-041f078 chore: remove image.png from repo, use GitHub raw URL instead
-c6720fa fix: use GitHub raw URL for image in README
-f0e32bc docs: add face verification screenshot to README
