@@ -1,0 +1,5 @@
+f7b4320 docs: add face verification screenshot to README
+67ac72b FINAL FIX: Enable Face Verification weights and fix 0-byte image serving
+26086fb docs: update README with live URL and accurate tech details
+77417bf docs: add direct live URL and free-tier performance note
+5e0e5c7 fix: use tensorflow/tensorflow:2.15.0 base image to avoid 300MB pip download
