@@ -7,38 +7,68 @@ sdk: docker
 pinned: false
 ---
 
-# Vision AI Engine
+# 👁️ Vision AI Engine
 
-Vision AI is a high-performance facial biometrics and analysis dashboard. It uses deep neural networks to provide real-time gender identification, age estimation, emotional spectrum analysis, and ethnicity classification directly from a webcam or image upload.
+**A professional-grade facial biometrics and analysis platform powered by deep learning.**
+
+Vision AI is a high-performance facial biometrics dashboard delivering real-time analysis of gender identification, age estimation, emotional spectrum analysis, and ethnicity classification. Built with state-of-the-art neural networks, it processes both live webcam feeds and uploaded images with exceptional accuracy.
 
 ![Biometric Evaluation](https://raw.githubusercontent.com/hodfa840/face-recognition-app-flask-python/main/image.png)
 
-## Core Features
-*   **Live Facial Scanning**: Real-time biometric HUD with neural stabilization for consistent tracking.
-*   **Identity Verification**: High-precision face matching using deep similarity metrics (VGG-Face, ArcFace).
-*   **Occlusion Handling**: Optimized performance for subjects with headgear (hijab), eyewear, or varying lighting conditions.
-*   **Detailed Analytics**: Sub-model level breakdowns of emotions and demographic clusters.
+### 🎯 [Live Demo on Hugging Face Spaces](https://huggingface.co/spaces/Hodfa71/vision-ai-engine)
+*Try the Vision AI Engine in action with real-time facial analysis — no installation required.*
 
-## Installation and Setup
+## ✨ Core Features
 
-1.  **Environment Configuration**:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # Windows: .\venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
+- **🎬 Live Facial Scanning** — Real-time biometric HUD with neural stabilization for consistent tracking across all poses and lighting conditions.
+- **🔐 Identity Verification** — High-precision face matching using deep similarity metrics (VGG-Face, ArcFace) with sub-second response times.
+- **🛡️ Occlusion Handling** — Optimized performance for subjects with headgear (hijab), eyewear, masks, or varying lighting conditions.
+- **📊 Detailed Analytics** — Sub-model level breakdowns with demographic clustering, emotion spectrum analysis, and confidence metrics.
 
-2.  **Model Configuration**:
-    The system requires pre-trained weights for the DeepFace engine. Download them using the following script:
-    ```bash
-    python scripts/download_weights.py
-    ```
+## 🚀 Installation & Setup
 
-3.  **Launch the System**:
-    ```bash
-    python run.py
-    ```
-    View the dashboard locally at `http://localhost:5000`.
+### Prerequisites
+- Python 3.8+
+- Webcam or image input capability
+- 4GB+ RAM (8GB+ recommended for optimal performance)
+
+### Quick Start
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/hodfa840/face-recognition-app-flask-python.git
+   cd face-recognition-app-flask-python
+   ```
+
+2. **Create Virtual Environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Download Pre-trained Models**
+   ```bash
+   python scripts/download_weights.py
+   ```
+
+5. **Launch the Application**
+   ```bash
+   python run.py
+   ```
+   Access the dashboard at **`http://localhost:5000`**
 
 ---
-*Developed by hodfa840*
+
+## 👤 Contributors
+
+**Developed and maintained by:** [hodfa840](https://github.com/hodfa840)  
+**Contact:** hodfa840@student.liu.se
+
+---
+
+*Vision AI Engine — Professional Facial Biometrics Platform*
